@@ -1,0 +1,78 @@
+Training log
+-----
+net = network2.Network([50, 150, 55], cost=network2.CrossEntropyCost())net.SGD(training_data, 30, 10, 0.75,lmbda = 0.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
+63.42
+63.6
+-----
+net = network2.Network([50, 300, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 30, 10, 0.75,lmbda = 0.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
+63.47
+65.0
+-----
+net = network2.Network([50, 10, 10, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 30, 10, 0.75,lmbda = 0.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
+60.29
+62.3
+-----
+net = network2.Network([50, 50, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 30, 10, 0.75,lmbda = 0.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
+63.08
+63.0
+-----
+net = network2.Network([50, 300, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 100, 10, 0.75,lmbda = 0.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
+72.13
+67.5
+-----
+net = network2.Network([50, 300, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 100, 10, 1.0,lmbda = 0.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
+72.95
+68.2
+-----
+net = network2.Network([50, 50, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 100, 10, 0.75,lmbda = 0.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
+66.75
+67.6
+-----
+net = network2.Network([50, 300, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 100, 10, 1.5,lmbda = 0.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
+73.37
+68.8
+-----
+net = network2.Network([50, 300, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 200, 10, 1.5,lmbda = 0.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True)
+79.98 (the training accuracy keeps on increasing slowly, as expected)
+68.9 (The evaluation accuracy doesn't increase after 86th epoch)
+-----
+NOW ONWARDS WITH THE 19000 dataset.
+-----
+net = network2.Network([50, 50, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 30, 10, 1.5,lmbda = 0.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True, items=2)
+68.2133333333
+54.75
+-----
+net = network2.Network([50, 50, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 30, 10, 3.0,lmbda = 10.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True, items=2)
+64.54
+51.95
+-----
+net = network2.Network([50, 50, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 30, 10, 3.0,lmbda = 1.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True, items=2)
+71.14
+57.2
+-----
+net = network2.Network([50, 50, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 30, 10, 3.0,lmbda = 0.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True, items=2)
+73.66
+56.95
+-----
+net = network2.Network([50, 50, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 30, 10, 1.5,lmbda = 0.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True, items=2)
+72.27
+56.3
+-----
+net = network2.Network([50, 50, 55], cost=network2.CrossEntropyCost())
+net.SGD(training_data, 30, 10, 1.5,lmbda = 0.0, evaluation_data=validation_data, monitor_evaluation_accuracy=True, monitor_evaluation_cost=True, monitor_training_accuracy=True, monitor_training_cost=True, items=10)
+may increase.
+Very liberal testing.
+-----
