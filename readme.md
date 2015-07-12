@@ -60,4 +60,12 @@ net.save('networkstore.txt')
 8. `net.save('networkstore.txt')` saves the network details to `networkstore.txt` file, so that we don't have to repeat the whole training again and again.
 9. Reloading the network instructions forthcoming. Code not yet ready.
 
+-----
+
+# Outputs
+
+1. The console would show the accuracy and cost after every epoch.
+2. The log file would store the following details: sizes, epochs, mini batch size, eta, lmbda, max training accuracy, max evaluation accuracy, min training cost, min evaluation cost, traininig accuracy, evaluation accuracy, weights, biases, unsolved examples, time of the training.
+
+				
 
