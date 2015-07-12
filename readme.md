@@ -37,7 +37,7 @@ See codecopy.sh for some of the samples.
 1. Open your terminal.
 2. Copy paste the code given below.
 ```
-cd codes/gittest/anndev/src
+cd codes/SamaasaClassification
 python -i
 import trialcode
 training_data, validation_data, test_data = trialcode.load_data_wrapper_major(trialcode.inputwords,trialcode.majorwords)
@@ -50,7 +50,7 @@ net.save('networkstore.txt')
 
 # Explanations
 
-1. `cd codes/gittest/anndev/src` needs to be modified with your dictionary where the code is placed.
+1. `cd codes/SamaasaClassification` needs to be modified with your dictionary where the code is placed.
 2. `python -i` opens the python terminal and ensures that the next code is executed in python shell.
 3. `import trialcode` imports the module trialcode
 4. `training_data, validation_data, test_data = trialcode.load_data_wrapper_major(trialcode.inputwords,trialcode.majorwords)` loads the data from the inputwords, outputwords and majorwords to our network for use.

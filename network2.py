@@ -193,7 +193,13 @@ class Network():
             print max(training_accuracy)/150.0
             print max(evaluation_accuracy)/20.0
             print
-        json.dump(unsolved_examples, f)
+        wrongs = 0
+        for mem in unsolved_examples:
+			wrongs = wrongs + len(mem)
+        print "Total wrongly identified samAsas are {}".format(wrongs)
+        final_examples = self.deflate(unsolved_examples)
+        print "Unique wrongly identified samAsas are {}".format(len(final_examples))
+        json.dump(final_examples, f)
         f.close()
         return evaluation_cost, evaluation_accuracy, \
             training_cost, training_accuracy
@@ -323,12 +329,20 @@ class Network():
 
 
     def returnerror(self, a, b, c):
-        """Save the neural network to the file ``filename``."""
         data = {"machine_answer": a,
                 "correct_answer": b,
                 "x": c,}
         return data
 
+    def deflate(self, a):
+		"""flattening a two layered array"""
+		data = []
+		for mem1 in a:
+			for mem2 in mem1:
+			    if mem2 not in data:
+				    data.append(mem2)
+		return data
+    
     def total_cost(self, data, lmbda, convert=False):
         """Return the total cost for the data set ``data``.  The flag
         ``convert`` should be set to False if the data set is the
