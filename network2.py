@@ -18,6 +18,7 @@ import random
 import sys
 from decimal import Decimal
 import heapq
+import datetime
 
 # Third-party libraries
 import numpy as np
@@ -201,6 +202,7 @@ class Network():
         print "Unique wrongly identified samAsas are {}".format(len(final_examples))
         json.dump(final_examples, f)
         f.close()
+        self.logonce(epochs, mini_batch_size, eta, lmbda, training_accuracy, evaluation_accuracy, training_cost, evaluation_cost, final_examples)
         return evaluation_cost, evaluation_accuracy, \
             training_cost, training_accuracy
 
@@ -367,6 +369,29 @@ class Network():
         f = open(filename, "w")
         json.dump(data, f)
         f.close()
+	
+    def logonce(self, epochs, mini_batch_size, eta, lmbda, training_accuracy, evaluation_accuracy, training_cost, evaluation_cost, final_examples):
+		""" Create a log of the network training with necessary details"""
+		f = open("log.txt","a")
+		data = {"sizes": self.sizes,
+				"epochs": epochs,
+				"mini_batch_size": mini_batch_size,
+				"eta": eta,
+				"lambda": lmbda,
+				"max_training_accuracy": max(training_accuracy)/150.0,
+				"max_evaluation_accuracy": max(evaluation_accuracy)/20.0,
+				"min_training_cost": min(training_cost),
+				"min_evaluation_cost": min(evaluation_cost),
+				"traininig_accuracy": training_accuracy,
+				"evaluation_accuracy": evaluation_accuracy,
+                "weights": [w.tolist() for w in self.weights],
+                "biases": [b.tolist() for b in self.biases],
+				"unsolved_examples": final_examples,
+			    "time": str(datetime.datetime.now())}
+		json.dump(data, f)
+		f.write("\n" + "--------------------" + "\n")
+		f.close()
+		
 
 #### Loading a Network
 def load(filename):
