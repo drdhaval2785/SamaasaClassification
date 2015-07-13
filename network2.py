@@ -191,8 +191,8 @@ class Network():
                 print "Accuracy on evaluation data: {} / {}".format(
                     self.accuracy(evaluation_data), n_data)
                 unsolved_examples.append(self.unsolved(evaluation_data))
-            print max(training_accuracy)/150.0
-            print max(evaluation_accuracy)/20.0
+            print (max(training_accuracy)*100.0)/len(training_data)
+            print (max(evaluation_accuracy)*100.0)/len(evaluation_data)
             print
         wrongs = 0
         for mem in unsolved_examples:
@@ -309,7 +309,7 @@ class Network():
             elif b in a:
                 pass
             else:
-                unsol.append(self.returnerror(self.samAsa_renamed(np.argmax(self.feedforward(x))), self.samAsa_renamed(np.argmax(y)), self.back_to_string(c.tolist()) ))
+                unsol.append(self.returnerror(self.samAsa_renamed(np.argmax(self.feedforward(c))), self.samAsa_renamed(np.argmax(d)), self.back_to_string(c.tolist()) ))
         return unsol
 
     def back_to_string(self, x):
