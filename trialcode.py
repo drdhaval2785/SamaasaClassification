@@ -51,21 +51,17 @@ def correct_output(index):
     return out
 
 def loadable_data(inputwords,outputwords):
-    x = np.array(first_member(inputwords[0:15000]))
-    y = np.array(second_member(outputwords[0:15000]))
-    x1 = np.array(first_member(inputwords[15000:17000]))
-    y1 = np.array(second_member(outputwords[15000:17000]))
-    x2 = np.array(first_member(inputwords[17000:19000]))
-    y2 = np.array(second_member(outputwords[17000:19000]))
-    return ((x,y),(x1,y1),(x2,y2))
+    x = np.array(first_member(inputwords[0:(len(inputwords)*8)/10]))
+    y = np.array(second_member(outputwords[0:(len(outputwords)*8)/10]))
+    x1 = np.array(first_member(inputwords[(len(inputwords)*8)/10:len(inputwords)]))
+    y1 = np.array(second_member(outputwords[(len(outputwords)*8)/10:len(outputwords)]))
+    return ((x,y),(x1,y1))
 def loadable_data_major(inputwords,majorwords):
-    x = np.array(first_member(inputwords[0:15000]))
-    y = np.array(second_member_major(majorwords[0:15000]))
-    x1 = np.array(first_member(inputwords[15000:17000]))
-    y1 = np.array(second_member_major(majorwords[15000:17000]))
-    x2 = np.array(first_member(inputwords[17000:19000]))
-    y2 = np.array(second_member_major(majorwords[17000:19000]))
-    return ((x,y),(x1,y1),(x2,y2))
+    x = np.array(first_member(inputwords[0:(len(inputwords)*8)/10]))
+    y = np.array(second_member_major(majorwords[0:(len(majorwords)*8)/10]))
+    x1 = np.array(first_member(inputwords[(len(inputwords)*8)/10:len(inputwords)]))
+    y1 = np.array(second_member_major(majorwords[(len(majorwords)*8)/10:len(majorwords)]))
+    return ((x,y),(x1,y1))
 
 """
 mnist_loader
@@ -99,15 +95,13 @@ def load_data_wrapper(inputwords,outputwords):
     the training data and the validation / test data.  These formats
     turn out to be the most convenient for use in our neural network
     code."""
-    tr_d, va_d, te_d = loadable_data(inputwords,outputwords)
+    tr_d, te_d = loadable_data(inputwords,outputwords)
     training_inputs = [np.reshape(x, (50, 1)) for x in tr_d[0]]
     training_results = [vectorized_result(y) for y in tr_d[1]]
     training_data = zip(training_inputs, training_results)
-    validation_inputs = [np.reshape(x, (50, 1)) for x in va_d[0]]
-    validation_data = zip(validation_inputs, va_d[1])
     test_inputs = [np.reshape(x, (50, 1)) for x in te_d[0]]
     test_data = zip(test_inputs, te_d[1])
-    return (training_data, validation_data, test_data)
+    return (training_data, test_data)
 
 def vectorized_result(j):
     """Return a 10-dimensional unit vector with a 1.0 in the jth
@@ -139,15 +133,13 @@ def load_data_wrapper_major(inputwords,majorwords):
     the training data and the validation / test data.  These formats
     turn out to be the most convenient for use in our neural network
     code."""
-    tr_d, va_d, te_d = loadable_data_major(inputwords,majorwords)
+    tr_d, te_d = loadable_data_major(inputwords,majorwords)
     training_inputs = [np.reshape(x, (50, 1)) for x in tr_d[0]]
     training_results = [vectorized_result_major(y) for y in tr_d[1]]
     training_data = zip(training_inputs, training_results)
-    validation_inputs = [np.reshape(x, (50, 1)) for x in va_d[0]]
-    validation_data = zip(validation_inputs, va_d[1])
     test_inputs = [np.reshape(x, (50, 1)) for x in te_d[0]]
     test_data = zip(test_inputs, te_d[1])
-    return (training_data, validation_data, test_data)
+    return (training_data, test_data)
 
 def vectorized_result_major(j):
     """Return a 10-dimensional unit vector with a 1.0 in the jth

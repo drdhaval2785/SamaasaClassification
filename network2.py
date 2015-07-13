@@ -180,7 +180,7 @@ class Network():
                 training_accuracy.append(accuracy)
                 print "Accuracy on training data: {} / {}".format(
                     accuracy, n)
-                unsolved_examples.append(self.unsolved(training_data))
+                unsolved_examples.append(self.unsolved(training_data, convert=True))
             if monitor_evaluation_cost:
                 cost = self.total_cost(evaluation_data, lmbda, convert=True)
                 evaluation_cost.append(cost)
@@ -283,11 +283,9 @@ class Network():
 
         """
         if convert:
-            
-            #results = [(self.sortmax(self.feedforward(x).tolist(), items), np.argmax(y)) for (x, y) in data]
-            results = [(map(self.feedforward(x).tolist().index, heapq.nlargest(2, self.feedforward(x).tolist())), np.argmax(y)) for (x, y) in data]
+            results = [(map(self.feedforward(x).tolist().index, heapq.nlargest(items, self.feedforward(x).tolist())), np.argmax(y)) for (x, y) in data]
         else:
-            results = [(map(self.feedforward(x).tolist().index, heapq.nlargest(2, self.feedforward(x).tolist())), y)
+            results = [(map(self.feedforward(x).tolist().index, heapq.nlargest(items, self.feedforward(x).tolist())), y)
                         for (x, y) in data]	
         counter = 0
         for (x, y) in results:
@@ -295,13 +293,23 @@ class Network():
                 counter = counter + 1
         return counter
 
-    def unsolved(self, data):
-        results = [(np.argmax(self.feedforward(x)), np.argmax(y), x, y) 
-                       for (x, y) in data]
+    def unsolved(self, data, convert=False, items=1):
+
+		#results = [(np.argmax(self.feedforward(x)), np.argmax(y), x, y) for (x, y) in data]
+        if convert:
+            results = [(map(self.feedforward(x).tolist().index, heapq.nlargest(items, self.feedforward(x).tolist())), np.argmax(y), x, y) for (x, y) in data]
+        else:
+            results = [(map(self.feedforward(x).tolist().index, heapq.nlargest(items, self.feedforward(x).tolist())), y, x, y)
+                        for (x, y) in data]
+
         unsol = []
         for (a, b, c, d) in results:
-            if b != a:
-                unsol.append(self.returnerror(self.samAsa_renamed(a), self.samAsa_renamed(b), self.back_to_string(c.tolist()) ))
+            if b == a:
+                pass
+            elif b in a:
+                pass
+            else:
+                unsol.append(self.returnerror(self.samAsa_renamed(np.argmax(self.feedforward(x))), self.samAsa_renamed(np.argmax(y)), self.back_to_string(c.tolist()) ))
         return unsol
 
     def back_to_string(self, x):
@@ -333,7 +341,7 @@ class Network():
     def returnerror(self, a, b, c):
         data = {"machine_answer": a,
                 "correct_answer": b,
-                "x": c,}
+                "samAsa_entered": c,}
         return data
 
     def deflate(self, a):
