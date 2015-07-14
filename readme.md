@@ -67,5 +67,12 @@ net.save('networkstore.txt')
 1. The console would show the accuracy and cost after every epoch.
 2. The log file would store the following details: sizes, epochs, mini batch size, eta, lmbda, max training accuracy, max evaluation accuracy, min training cost, min evaluation cost, traininig accuracy, evaluation accuracy, weights, biases, unsolved examples, time of the training.
 
-				
+-----
+
+# Todo
+
+1. Make it generic for all string related ANN functions
+2. Make it useful for any strign classification purpose
+3. Make it usable across ASCII / UTF8 character range
+
 

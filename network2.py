@@ -202,7 +202,7 @@ class Network():
         print "Unique wrongly identified samAsas are {}".format(len(final_examples))
         json.dump(final_examples, f)
         f.close()
-        self.logonce(epochs, mini_batch_size, eta, lmbda, training_accuracy, evaluation_accuracy, training_cost, evaluation_cost, final_examples)
+        self.logonce(epochs, mini_batch_size, eta, lmbda, training_accuracy, evaluation_accuracy, training_cost, evaluation_cost, final_examples, training_data, evaluation_data)
         return evaluation_cost, evaluation_accuracy, \
             training_cost, training_accuracy
 
@@ -313,14 +313,25 @@ class Network():
         return unsol
 
     def back_to_string(self, x):
+        letters = [chr(p) for p in range(32, 128)]
+        values = [(ord(q)-32.0)/96.0 for q in letters]
+        letters[0] = ''
+        val = ''
+        for i in range(len(x)):
+            val = val+letters[values.index(x[i][0])]
+            val.replace(' ','')
+        return val
+	# The following function is better for Sanskrit outputs. Commented out for ASCII compatibility. If we use this, the input sva() function in trialcode needs to be modified accordingly.
+    """def back_to_string(self, x):
         letters = ["a","A","i","I","u","U","f","F","x","X","e","E","o","O","k","K","g","G","N","c","C","j","J","Y","w","W","q","Q","R","t","T","d","D","n","p","P","b","B","m","y","r","l","v","S","z","s","h","M","!","H","-",""]
         values = [0.019230769230769,0.038461538461538,0.057692307692308,0.076923076923077,0.096153846153846,0.11538461538462,0.13461538461538,0.15384615384615,0.17307692307692,0.19230769230769,0.21153846153846,0.23076923076923,0.25,0.26923076923077,0.28846153846154,0.30769230769231,0.32692307692308,0.34615384615385,0.36538461538462,0.38461538461538,0.40384615384615,0.42307692307692,0.44230769230769,0.46153846153846,0.48076923076923,0.5,0.51923076923077,0.53846153846154,0.55769230769231,0.57692307692308,0.59615384615385,0.61538461538462,0.63461538461538,0.65384615384615,0.67307692307692,0.69230769230769,0.71153846153846,0.73076923076923,0.75,0.76923076923077,0.78846153846154,0.80769230769231,0.82692307692308,0.84615384615385,0.86538461538462,0.88461538461538,0.90384615384615,0.92307692307692,0.94230769230769,0.96153846153846,0.98076923076923,0.0]
         val = ''
         for i in range(len(x)):
             val = val+letters[values.index(x[i][0])]
-        return val
+        return val"""
+
     
-    def samAsa_renamed(self, x, major_minor="major"):
+    def samAsa_renamed(self, x, major_minor="minor"):
         samAsa_types = ["A1","A2","A3","A4","A5","A6","A7","K1","K2","K3","K4","K5","K6","K7","Km","T1","T2","T3","T4","T5","T6","T7","Tn","Tds","Tdt","Tdu","Tg","Tk","Tp","Tm","Tb","U","Bs2","Bs3","Bs4","Bs5","Bs6","Bs7","Bsd","Bsp","Bsg","Bsmn","Bvp","Bss","Bsu","Bv","Bvs","BvS","BvU","Bb","Di","Ds","E","S","d"]
         majorlist = ["A","K","T","B","D",]
         if major_minor == "major":
@@ -378,7 +389,7 @@ class Network():
         json.dump(data, f)
         f.close()
 	
-    def logonce(self, epochs, mini_batch_size, eta, lmbda, training_accuracy, evaluation_accuracy, training_cost, evaluation_cost, final_examples):
+    def logonce(self, epochs, mini_batch_size, eta, lmbda, training_accuracy, evaluation_accuracy, training_cost, evaluation_cost, final_examples, training_data, evaluation_data):
 		""" Create a log of the network training with necessary details"""
 		f = open("log.txt","a")
 		data = {"sizes": self.sizes,
@@ -422,7 +433,7 @@ def vectorized_result(j):
     into a corresponding desired output from the neural network.
 
     """
-    e = np.zeros((5, 1))
+    e = np.zeros((55, 1))
     e[j] = 1.0
     return e
 
