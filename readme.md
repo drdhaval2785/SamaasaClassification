@@ -99,4 +99,10 @@ The explanation remains the same.
 
 1. Make it usable across UTF8 character range
 
+-----
 
+# Results in samAsa classification
+
+## Classification in 5 major samAsa classes i.e. karmadhAraya, bahuvrIhi, tatpuruSa, dvandva and avyayIbhAva.
+
+## Classification in 55 minor samAsa classes.

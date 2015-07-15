@@ -13,15 +13,15 @@ all_class_types = list(set(outputwords))
 # input_neuron may be set according to the maximum number of letters you want to admit in the input e.g. we have taken 50 as the maximum size of admissible letters.
 input_neuron = 50
 # You may have to fiddle with this number. It is more of an experiment. Thumbrule - keep 3 times the output neuron
-intermediate_neuron = 30
+intermediate_neuron = 150
 # Calculating the neurons in output layer = number of unique classes.
 output_neuron = len(all_class_types)
 # 30 is the maximum you should try. After that, the training is usually too slow. If you are testing, try with 5. Once you get good results, increase to 30, maybe 100 if the learning goes on well.
-epochs = 2
+epochs = 30
 # Empirical data shows that keeping it 10 keeps the output decent without slowing down the machine unnecessarily
 mini_batch_size = 10
 # Hyper-parameter. See http://neuralnetworksanddeeplearning.com/chap3.html#how_to_choose_a_neural_network%27s_hyper-parameters
-eta = 1.0
+eta = 0.75
 # Hyper-parameter. See http://neuralnetworksanddeeplearning.com/chap3.html#how_to_choose_a_neural_network%27s_hyper-parameters
 lmbda = 0.0
 # Whether you want to monitor the following costs or accuracies ? By default they are True. You can turn them off by making them False here.
