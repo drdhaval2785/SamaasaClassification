@@ -103,6 +103,8 @@ The explanation remains the same.
 
 # Results in samAsa classification
 
-## Classification in 5 major samAsa classes i.e. karmadhAraya, bahuvrIhi, tatpuruSa, dvandva and avyayIbhAva.
+##### Classification in 5 major samAsa classes
 
-## Classification in 55 minor samAsa classes.
+
+##### Classification in 55 minor samAsa classes
+
