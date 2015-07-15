@@ -105,6 +105,16 @@ The explanation remains the same.
 
 ##### Classification in 5 major samAsa classes
 
+Roughly 70 %.
+
+`[input_neuron, intermediate_neuron, output_neuron], epoch, mini_batch_size, eta, lmbda, howmany, mode : training_accuracy, evaluation_accuracy`
+
+[50, 50, 5], 100, 10, 1.5, 0.0, 1, "Sanskrit" : 71.9971616566, 70.0464396285
 
 ##### Classification in 55 minor samAsa classes
 
+Roughly 55 %.
+
+`[input_neuron, intermediate_neuron, output_neuron], epoch, mini_batch_size, eta, lmbda, howmany, mode : training_accuracy, evaluation_accuracy`
+
+[50, 150, 47], 30, 10, 0.75, 0.0, 1, "Sanskrit" : 57.2764804541, 55.3921568627
