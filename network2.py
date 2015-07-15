@@ -188,10 +188,10 @@ class Network():
                 evaluation_cost.append(cost)
                 print "Cost on evaluation data: {}".format(cost)
             if monitor_evaluation_accuracy:
-                accuracy = self.accuracy(evaluation_data)
+                accuracy = self.accuracy(evaluation_data, convert=False, items=items)
                 evaluation_accuracy.append(accuracy)
                 print "Accuracy on evaluation data: {} / {}".format(
-                    self.accuracy(evaluation_data), n_data)
+                    accuracy, n_data)
                 unsolved_examples.append(self.unsolved(evaluation_data, classtypes, mode, convert=False)) # Added to log the wrongly identified data
             print (max(training_accuracy)*100.0)/len(training_data) # Print maximum accuracy across epochs
             print (max(evaluation_accuracy)*100.0)/len(evaluation_data) # print maximum accuracy across epochs
