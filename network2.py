@@ -16,9 +16,9 @@ features.
 import json
 import random
 import sys
-from decimal import Decimal
-import heapq
-import datetime
+from decimal import Decimal # Added by Dhaval
+import heapq # Added by Dhaval
+import datetime # Added by Dhaval
 
 # Third-party libraries
 import numpy as np
@@ -129,6 +129,7 @@ class Network():
             a = sigmoid_vec(np.dot(w, a)+b)
         return a
 
+	# Dhaval added parameters classtypes, mode and items
     def SGD(self, training_data, epochs, mini_batch_size, eta, classtypes, mode,
             lmbda = 0.0, 
             evaluation_data=None, 
@@ -181,7 +182,7 @@ class Network():
                 training_accuracy.append(accuracy)
                 print "Accuracy on training data: {} / {}".format(
                     accuracy, n)
-                unsolved_examples.append(self.unsolved(training_data, classtypes, mode, convert=True))
+                unsolved_examples.append(self.unsolved(training_data, classtypes, mode, convert=True)) # Added to log the wrongly identified data
             if monitor_evaluation_cost:
                 cost = self.total_cost(evaluation_data, lmbda, output_neuron, convert=True)
                 evaluation_cost.append(cost)
@@ -191,22 +192,23 @@ class Network():
                 evaluation_accuracy.append(accuracy)
                 print "Accuracy on evaluation data: {} / {}".format(
                     self.accuracy(evaluation_data), n_data)
-                unsolved_examples.append(self.unsolved(evaluation_data, classtypes, mode, convert=False))
-            print (max(training_accuracy)*100.0)/len(training_data)
-            print (max(evaluation_accuracy)*100.0)/len(evaluation_data)
+                unsolved_examples.append(self.unsolved(evaluation_data, classtypes, mode, convert=False)) # Added to log the wrongly identified data
+            print (max(training_accuracy)*100.0)/len(training_data) # Print maximum accuracy across epochs
+            print (max(evaluation_accuracy)*100.0)/len(evaluation_data) # print maximum accuracy across epochs
             print
         wrongs = 0
         for mem in unsolved_examples:
 			wrongs = wrongs + len(mem)
-        print "Total wrongly identified samAsas are {}".format(wrongs)
-        final_examples = self.deflate(unsolved_examples)
-        print "Unique wrongly identified samAsas are {}".format(len(final_examples))
-        json.dump(final_examples, f)
+        print "Total wrongly identified samAsas are {}".format(wrongs) # Print total number of wrong identification in all epochs.
+        final_examples = self.deflate(unsolved_examples) # Removed duplicates
+        print "Unique wrongly identified samAsas are {}".format(len(final_examples)) # Print total unique wrongly identified data in all epochs.
+        json.dump(final_examples, f) # Save the wrong data in file wrongdata.txt for further manipulation, if needed.
         f.close()
-        self.logonce(epochs, mini_batch_size, eta, lmbda, training_accuracy, evaluation_accuracy, training_cost, evaluation_cost, final_examples, training_data, evaluation_data)
+        self.logonce(epochs, mini_batch_size, eta, lmbda, training_accuracy, evaluation_accuracy, training_cost, evaluation_cost, final_examples, training_data, evaluation_data) # Logging all necessary information along for reconstruction of network, accuracies, costs etc with wrong identified data
         return evaluation_cost, evaluation_accuracy, \
             training_cost, training_accuracy
 
+	# No change
     def update_mini_batch(self, mini_batch, eta, lmbda, n):
         """Update the network's weights and biases by applying gradient
         descent using backpropagation to a single mini batch.  The
@@ -226,6 +228,7 @@ class Network():
         self.biases = [b-(eta/len(mini_batch))*nb 
                        for b, nb in zip(self.biases, nabla_b)]
 
+	# No change
     def backprop(self, x, y):
         """Return a tuple ``(nabla_b, nabla_w)`` representing the
         gradient for the cost function C_x.  ``nabla_b`` and
@@ -260,6 +263,7 @@ class Network():
             nabla_w[-l] = np.dot(delta, activations[-l-1].transpose())
         return (nabla_b, nabla_w)
 
+	# Added the parameter items. (default is items=1 i.e. the most activated is matched. If items=2, then the two most activated are compared against the correct answer and if found matching, it is considered correct. Equivalent to "The answer is in 'n' most activated neurons")
     def accuracy(self, data, convert=False, items=1):
         """Return the number of inputs in ``data`` for which the neural
         network outputs the correct result. The neural network's
@@ -294,6 +298,7 @@ class Network():
                 counter = counter + 1
         return counter
 
+	# Added by Dhaval to append the data of unsolved examples.
     def unsolved(self, data, classtypes, mode, convert=False, items=1):
 
 		#results = [(np.argmax(self.feedforward(x)), np.argmax(y), x, y) for (x, y) in data]
@@ -310,9 +315,10 @@ class Network():
             elif b in a:
                 pass
             else:
-                unsol.append(self.returnerror(self.samAsa_renamed(np.argmax(self.feedforward(c)), classtypes), self.samAsa_renamed(np.argmax(d), classtypes), self.back_to_string(c.tolist(), mode) ))
+                unsol.append(self.returnerror(self.class_renamed(np.argmax(self.feedforward(c)), classtypes), self.class_renamed(np.argmax(d), classtypes), self.back_to_string(c.tolist(), mode) ))
         return unsol
 
+	# Added by Dhaval. It is reverse of sva in preparation.py. Converts the numbers back to human readable format.
     def back_to_string(self, x, mode):
         val = ''
         if mode == "ASCII":
@@ -331,15 +337,18 @@ class Network():
 				val = val+letters[values.index(x[i][0])]
 			return val
     
-    def samAsa_renamed(self, x, classtypes):
+    # Added by Dhaval. It returns the classname from the number.
+    def class_renamed(self, x, classtypes):
         return classtypes[x]
 
+	# Added by Dhaval. returns the data in format amenable to json.
     def returnerror(self, a, b, c):
         data = {"machine_answer": a,
                 "correct_answer": b,
-                "samAsa_entered": c,}
+                "input_entered": c,}
         return data
 
+	# Added by Dhaval. Flattens a two layered array
     def deflate(self, a):
 		"""flattening a two layered array"""
 		data = []
@@ -349,6 +358,7 @@ class Network():
 				    data.append(mem2)
 		return data
     
+	# Added parameter output_neuron to make it generalised.
     def total_cost(self, data, lmbda, output_neuron, convert=False):
         """Return the total cost for the data set ``data``.  The flag
         ``convert`` should be set to False if the data set is the
@@ -364,6 +374,7 @@ class Network():
         cost += 0.5*(lmbda/len(data))*sum(np.linalg.norm(w)**2 for w in self.weights)
         return cost
 
+	# No change. Saves the neural network.
     def save(self, filename):
         """Save the neural network to the file ``filename``."""
         data = {"sizes": self.sizes,
@@ -374,6 +385,7 @@ class Network():
         json.dump(data, f)
         f.close()
 	
+	# Preparing a log of the network parameters, accuracies, costs and wrongly identified members for future reconstruction. Maybe we should enter input and outputs as well.
     def logonce(self, epochs, mini_batch_size, eta, lmbda, training_accuracy, evaluation_accuracy, training_cost, evaluation_cost, final_examples, training_data, evaluation_data):
 		""" Create a log of the network training with necessary details"""
 		f = open("log.txt","a")
@@ -398,6 +410,7 @@ class Network():
 		
 
 #### Loading a Network
+# No change.
 def load(filename):
     """Load a neural network from the file ``filename``.  Returns an
     instance of Network.
@@ -412,6 +425,7 @@ def load(filename):
     return net
 
 #### Miscellaneous functions
+# Dhaval added a parameter output_neuron for generalization.
 def vectorized_result(j, output_neuron):
     """Return a 10-dimensional unit vector with a 1.0 in the j'th position
     and zeroes elsewhere.  This is used to convert a digit (0...9)
@@ -422,12 +436,14 @@ def vectorized_result(j, output_neuron):
     e[j] = 1.0
     return e
 
+# No change
 def sigmoid(z):
     """The sigmoid function."""
     return 1.0/(1.0+np.exp(-z))
 
 sigmoid_vec = np.vectorize(sigmoid)
 
+# No change
 def sigmoid_prime(z):
     """Derivative of the sigmoid function."""
     return sigmoid(z)*(1-sigmoid(z))
