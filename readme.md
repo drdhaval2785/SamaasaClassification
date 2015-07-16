@@ -98,6 +98,8 @@ The explanation remains the same.
 # Todo
 
 1. Make it usable across UTF8 character range
+2. Store the best accuracy network in all epochs, and not the last epoch network.
+3. Store the wrong classification list for only the best accuracy epoch and not all epochs.
 
 -----
 
