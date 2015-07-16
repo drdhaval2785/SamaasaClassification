@@ -11,7 +11,7 @@ outputwords = ["D","B","A","T","T","B","T","T","B","D","K","T","K","T","B","D","
 # Find out the total types of classes from the given outputwords
 all_class_types = list(set(outputwords))
 # input_neuron may be set according to the maximum number of letters you want to admit in the input e.g. we have taken 50 as the maximum size of admissible letters.
-input_neuron = 50
+input_neuron = 25
 # You may have to fiddle with this number. It is more of an experiment. Thumbrule - keep 3 times the output neuron
 intermediate_neuron = 30
 # Calculating the neurons in output layer = number of unique classes.
@@ -30,7 +30,7 @@ monitor_evaluation_accuracy = True
 monitor_training_cost = True
 monitor_training_accuracy = True
 # This is the level till which you would accept the outcome as true. Default is 1 i.e. only the highest activated output neuron is tested. If you set it to 5, the machine would test whether the correct answer falls within 5 highest activated neurons of the network e.g. "K" is the correct answer and the highest activations are "A", "T", "D", "B" and "K" sequentially. Till item==4, the output would not match the correct answer. If the item==5, the output would match the correct answer.
-howmany = 2
+howmany = 1
 # Two options - "Sanskrit" / "ASCII". Sanskrit is better for Sanskrit related stuff. For roman letters, choose ASCII.
 mode = "Sanskrit"
 
@@ -41,20 +41,20 @@ mode = "Sanskrit"
 
 # function sva(string value assignment) assigns a value between 0 and 1 to all the characters, because input neurons must have values between 0 and 1. back_to_string in network2.py is the function which reverts these numbers back to human readable items.
 """ For Sanskrit mode, we have taken SLP1 as the encoding and assigned them value of number/52.0. For ASCII mode, we have taken (number-32.0)/96.0 because the first 32 members of ASCII are not much useful for strings. Right now we have kept 50 as maximum limit of string. It can be extended if needed."""
-def sva(string, mode="Sanskrit"):
+def sva(string, input_neuron, mode="Sanskrit"):
     val = []
     if mode == "Sanskrit":
 		letters = ["a","A","i","I","u","U","f","F","x","X","e","E","o","O","k","K","g","G","N","c","C","j","J","Y","w","W","q","Q","R","t","T","d","D","n","p","P","b","B","m","y","r","l","v","S","z","s","h","M","!","H","-"]
 		values = [0.019230769230769,0.038461538461538,0.057692307692308,0.076923076923077,0.096153846153846,0.11538461538462,0.13461538461538,0.15384615384615,0.17307692307692,0.19230769230769,0.21153846153846,0.23076923076923,0.25,0.26923076923077,0.28846153846154,0.30769230769231,0.32692307692308,0.34615384615385,0.36538461538462,0.38461538461538,0.40384615384615,0.42307692307692,0.44230769230769,0.46153846153846,0.48076923076923,0.5,0.51923076923077,0.53846153846154,0.55769230769231,0.57692307692308,0.59615384615385,0.61538461538462,0.63461538461538,0.65384615384615,0.67307692307692,0.69230769230769,0.71153846153846,0.73076923076923,0.75,0.76923076923077,0.78846153846154,0.80769230769231,0.82692307692308,0.84615384615385,0.86538461538462,0.88461538461538,0.90384615384615,0.92307692307692,0.94230769230769,0.96153846153846,0.98076923076923]
 		for i in range(len(string)):
 		    val.append(values[letters.index(string[i])])
-		while (len(val)<50):
+		while (len(val)<input_neuron):
 		    val.append(0.0)
 		return val
     elif mode == "ASCII":
 		for i in range(len(string)):
 		    val.append((ord(string[i])-32.0)/96.0)
-		while (len(val)<50):
+		while (len(val)<input_neuron):
 		    val.append(0.0)
 		return val
 
@@ -65,14 +65,24 @@ def classprint(majorwords):
     print "They are:",
     print uniqueclass
     for member in uniqueclass:
-        print "Total members of class", member, "are:", majorwords.count(member)
+        print "Total members of class", member, "are:", majorwords.count(member), "i.e.", (majorwords.count(member)*100.0)/len(majorwords), "%"
     return uniqueclass
 
+# function lenprint prints the number of words of specified length.
+def lenprint(inputwords):
+    counter = 0
+    for i in xrange(50):
+        for word in inputwords:
+            if len(word) == i:
+                counter = counter + 1
+        print "Words of length", i, "are:", counter, "i.e.", (counter*100.0)/len(inputwords), "%"
+        counter = 0
+
 # function first_member converst the input string to a 50 member list having numbers instead of letters. Conversion depends on mode ASCII / Sanskrit.
-def first_member(inputwords, mode):
+def first_member(inputwords, input_neuron, mode):
     bigval = []
     for word in inputwords:
-	bigval.append(sva(word, mode))
+	bigval.append(sva(word, input_neuron, mode))
     return bigval
 
 # function second_member converts the name of the class to its index in all_class_types. Thus the second member is also converted to numbers to be manipulatable for network.
@@ -83,10 +93,10 @@ def second_member(outputwords):
     return secval
 
 # function loadable_data is the function which splits the given input data and output data into two parts - 80% training data and 20% evaluation data. The data are in numpy ndarray format. This is the format in which the load_data_wrapper code takes input. Now our data is compatible with the system of original code by M Neilson.
-def loadable_data(inputwords,outputwords, mode):
-    x = np.array(first_member(inputwords[0:(len(inputwords)*8)/10], mode))
+def loadable_data(inputwords,outputwords, input_neuron, mode):
+    x = np.array(first_member(inputwords[0:(len(inputwords)*8)/10], input_neuron, mode))
     y = np.array(second_member(outputwords[0:(len(outputwords)*8)/10]))
-    x1 = np.array(first_member(inputwords[(len(inputwords)*8)/10:len(inputwords)], mode))
+    x1 = np.array(first_member(inputwords[(len(inputwords)*8)/10:len(inputwords)], input_neuron, mode))
     y1 = np.array(second_member(outputwords[(len(outputwords)*8)/10:len(outputwords)]))
     return ((x,y),(x1,y1))
 
@@ -101,7 +111,7 @@ function usually called by our neural network code.
 """
 
 # Change in the function is addition of two parameters output_neuron and mode to suit string manipulation.
-def load_data_wrapper(inputwords, outputwords, output_neuron, mode):
+def load_data_wrapper(inputwords, outputwords, output_neuron, mode, input_neuron):
     """Return a tuple containing ``(training_data, validation_data,
     test_data)``. Based on ``load_data``, but the format is more
     convenient for use in our implementation of neural networks.
@@ -122,11 +132,11 @@ def load_data_wrapper(inputwords, outputwords, output_neuron, mode):
     the training data and the validation / test data.  These formats
     turn out to be the most convenient for use in our neural network
     code."""
-    tr_d, te_d = loadable_data(inputwords,outputwords, mode)
-    training_inputs = [np.reshape(x, (50, 1)) for x in tr_d[0]]
+    tr_d, te_d = loadable_data(inputwords,outputwords, input_neuron, mode)
+    training_inputs = [np.reshape(x, (input_neuron, 1)) for x in tr_d[0]]
     training_results = [vectorized_result(y, output_neuron) for y in tr_d[1]]
     training_data = zip(training_inputs, training_results)
-    test_inputs = [np.reshape(x, (50, 1)) for x in te_d[0]]
+    test_inputs = [np.reshape(x, (input_neuron, 1)) for x in te_d[0]]
     test_data = zip(test_inputs, te_d[1])
     return (training_data, test_data)
 
@@ -143,8 +153,9 @@ def vectorized_result(j, output_neuron):
 # Printing data regarding given data set. If the input and the output data set are not of equal numbers, the error message is shown.
 if len(inputwords) == len(outputwords):
     classprint(outputwords)
-    print "Total input words are : ", len(inputwords)
-    print "Total output words are : ", len(outputwords)
+    lenprint(inputwords)
+    print "Total input words are :", len(inputwords)
+    print "Total output words are :", len(outputwords)
 else:
     print "Your dataset seems to be mismatched. The input list and the expected output list do not have the same number of members."
     exit()

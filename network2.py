@@ -179,32 +179,46 @@ class Network():
                 print "Cost on training data: {}".format(cost)
             if monitor_training_accuracy:
                 accuracy = self.accuracy(training_data, convert=True, items=items)
-                training_accuracy.append(accuracy)
                 print "Accuracy on training data: {} / {}".format(
                     accuracy, n)
-                unsolved_examples.append(self.unsolved(training_data, classtypes, mode, convert=True)) # Added to log the wrongly identified data
+                if j == 0:
+                    #unsolved_examples.append(self.unsolved(training_data, classtypes, mode, convert=True)) # Added to log the wrongly identified data					
+                    unsolved_training_examples = self.unsolved(training_data, classtypes, mode, convert=True) # Added to log the wrongly identified data					
+                    print "Stored unsolved training examples because it has highest accuracy"
+                elif accuracy > max(training_accuracy):
+                    unsolved_training_examples = self.unsolved(training_data, classtypes, mode, convert=True) # Added to log the wrongly identified data					
+                    print "Stored unsolved training examples because it has highest accuracy"
+                training_accuracy.append(accuracy)
             if monitor_evaluation_cost:
                 cost = self.total_cost(evaluation_data, lmbda, output_neuron, convert=True)
                 evaluation_cost.append(cost)
                 print "Cost on evaluation data: {}".format(cost)
             if monitor_evaluation_accuracy:
                 accuracy = self.accuracy(evaluation_data, convert=False, items=items)
-                evaluation_accuracy.append(accuracy)
                 print "Accuracy on evaluation data: {} / {}".format(
                     accuracy, n_data)
-                unsolved_examples.append(self.unsolved(evaluation_data, classtypes, mode, convert=False)) # Added to log the wrongly identified data
+                if j == 0:
+                    #unsolved_examples.append(self.unsolved(evaluation_data, classtypes, mode, convert=False)) # Added to log the wrongly identified data
+                    unsolved_evaluation_examples = self.unsolved(evaluation_data, classtypes, mode, convert=False) # Added to log the wrongly identified data
+                    self.save("networkstore.txt")
+                    print "Stored unsolved evaluation examples because it has highest accuracy"
+                    print "Saved network because it has highest evaluation accuracy"
+                elif accuracy > max(evaluation_accuracy):
+                    #unsolved_examples.append(self.unsolved(evaluation_data, classtypes, mode, convert=False)) # Added to log the wrongly identified data
+                    unsolved_evaluation_examples = self.unsolved(evaluation_data, classtypes, mode, convert=False) # Added to log the wrongly identified data
+                    self.save("networkstore.txt")
+                    print "Stored unsolved evaluation examples because it has highest accuracy"
+                    print "Saved network because it has highest evaluation accuracy"
+                evaluation_accuracy.append(accuracy)
             print (max(training_accuracy)*100.0)/len(training_data) # Print maximum accuracy across epochs
             print (max(evaluation_accuracy)*100.0)/len(evaluation_data) # print maximum accuracy across epochs
             print
-        wrongs = 0
-        for mem in unsolved_examples:
-			wrongs = wrongs + len(mem)
+        unsolved_examples = unsolved_training_examples + unsolved_evaluation_examples
+        wrongs = len(unsolved_examples)
         print "Total wrongly identified samAsas are {}".format(wrongs) # Print total number of wrong identification in all epochs.
-        final_examples = self.deflate(unsolved_examples) # Removed duplicates
-        print "Unique wrongly identified samAsas are {}".format(len(final_examples)) # Print total unique wrongly identified data in all epochs.
-        json.dump(final_examples, f) # Save the wrong data in file wrongdata.txt for further manipulation, if needed.
+        json.dump(unsolved_examples, f) # Save the wrong data in file wrongdata.txt for further manipulation, if needed.
         f.close()
-        self.logonce(epochs, mini_batch_size, eta, lmbda, training_accuracy, evaluation_accuracy, training_cost, evaluation_cost, final_examples, training_data, evaluation_data) # Logging all necessary information along for reconstruction of network, accuracies, costs etc with wrong identified data
+        self.logonce(epochs, mini_batch_size, eta, lmbda, training_accuracy, evaluation_accuracy, training_cost, evaluation_cost, unsolved_examples, training_data, evaluation_data) # Logging all necessary information along for reconstruction of network, accuracies, costs etc with wrong identified data
         return evaluation_cost, evaluation_accuracy, \
             training_cost, training_accuracy
 
@@ -348,15 +362,6 @@ class Network():
                 "input_entered": c,}
         return data
 
-	# Added by Dhaval. Flattens a two layered array
-    def deflate(self, a):
-		"""flattening a two layered array"""
-		data = []
-		for mem1 in a:
-			for mem2 in mem1:
-			    if mem2 not in data:
-				    data.append(mem2)
-		return data
     
 	# Added parameter output_neuron to make it generalised.
     def total_cost(self, data, lmbda, output_neuron, convert=False):
@@ -407,7 +412,6 @@ class Network():
 		json.dump(data, f)
 		f.write("\n" + "--------------------" + "\n")
 		f.close()
-		
 
 #### Loading a Network
 # No change.
