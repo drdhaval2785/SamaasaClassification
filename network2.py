@@ -308,27 +308,21 @@ class Network():
                         for (x, y) in data]	
         counter = 0
         for (x, y) in results:
-            if y in x:
+            if y == x:
                 counter = counter + 1
         return counter
 
 	# Added by Dhaval to append the data of unsolved examples.
     def unsolved(self, data, classtypes, mode, convert=False, items=1):
-
-		#results = [(np.argmax(self.feedforward(x)), np.argmax(y), x, y) for (x, y) in data]
+        #results1 = [(np.argmax(self.feedforward(x)), np.argmax(y), x, y) for (x, y) in data]
         if convert:
             results = [(map(self.feedforward(x).tolist().index, heapq.nlargest(items, self.feedforward(x).tolist())), np.argmax(y), x, y) for (x, y) in data]
         else:
             results = [(map(self.feedforward(x).tolist().index, heapq.nlargest(items, self.feedforward(x).tolist())), y, x, y)
                         for (x, y) in data]
-
         unsol = []
         for (a, b, c, d) in results:
-            if b == a:
-                pass
-            elif b in a:
-                pass
-            else:
+            if a != b:
                 unsol.append(self.returnerror(self.class_renamed(np.argmax(self.feedforward(c)), classtypes), self.class_renamed(np.argmax(d), classtypes), self.back_to_string(c.tolist(), mode) ))
         return unsol
 
@@ -412,6 +406,15 @@ class Network():
 		json.dump(data, f)
 		f.write("\n" + "--------------------" + "\n")
 		f.close()
+
+    # Dhaval added parameters classtypes, mode and items
+    def testing(self, evaluation_data, items=1):
+        n_data = len(evaluation_data)
+        f = open("wrongdata.txt", "w")
+        accuracy = self.accuracy(evaluation_data, convert=False, items=items)
+        print "Accuracy on evaluation data: {} / {} i.e. {} %".format(
+				accuracy, n_data, (accuracy*100.0)/n_data)
+
 
 #### Loading a Network
 # No change.

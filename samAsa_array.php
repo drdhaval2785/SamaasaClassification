@@ -9,13 +9,18 @@ $samAsa_types = array("A1","A2","A3","A4","A5","A6","A7","K1","K2","K3","K4","K5
 
 $dataset1 = tagseparator("input.txt"); // presenting the word:tag format
 echo "Culled the words with Tags from input.txt<br/>\n";
+echo count($dataset1)."\n";
 $dataset2 = multitags($dataset1); // when two tags are applied, changing it to two different entries with different tags.
-echo "Separated the words with multiple tags into multiple entries<br/>\n";
 shuffle($dataset2);
+echo count($dataset2)."\n";
 $inputset = inputset($dataset2)[0]; // An array of training inputs.
 $outputset = inputset($dataset2)[1]; // An array of training inputs.
 echo "Created an array of input compounds<br/>\n";
 $majorset = majorset($outputset);
+$yn = yn($majorset, "T");
+echo count($inputset)."\n";
+echo count($outputset)."\n";
+echo count($majorset)."\n";
 
 $infile = fopen("samAsa_details.txt","w+");
 fputs($infile,'inputwords = [');
@@ -39,6 +44,14 @@ fputs($infile,'majorwords = [');
 for ($i=0;$i<count($majorset);$i++)
 {
 	fputs($infile,'"'.$majorset[$i].'",');
+}
+fputs($infile,']
+');
+
+fputs($infile,'yn = [');
+for ($i=0;$i<count($yn);$i++)
+{
+	fputs($infile,'"'.$yn[$i].'",');
 }
 fputs($infile,']
 ');
@@ -137,7 +150,8 @@ function inputset($dataset2)
 	$val[1] = $output;
 	return $val;
 }
-function majorset($outputset)
+
+function majorset($outputset)output
 {
 	$fulllist = array("A1","A2","A3","A4","A5","A6","A7","K1","K2","K3","K4","K5","K6","K7","Km","T1","T2","T3","T4","T5","T6","T7","Tn","Tds","Tdt","Tdu","Tg","Tk","Tp","Tm","Tb","Bs2","Bs3","Bs4","Bs5","Bs6","Bs7","Bsd","Bsp","Bsg","Bsmn","Bvp","Bss","Bsu","Bvs","BvS","Bv","BvU","Bb","Di","Ds","E","S","d","U","BT");
     $majorlist = array("A","A","A","A","A","A","A","K","K","K","K","K","K","K","K","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","D","D","D","D","D","T","B");
@@ -148,4 +162,20 @@ function majorset($outputset)
 	}
 	return $val;
 }
+function yn($majorset, $classname)
+{
+	foreach ($majorset as $value)
+	{
+		if ($value === $classname)
+		{
+			$val[] = str_replace($value,"Y",$value);			
+		}
+		else
+		{
+			$val[] = str_replace($value,"N",$value);
+		}
+	}
+	return $val;
+}
+
 ?>
