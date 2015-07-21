@@ -10,6 +10,8 @@ easily modifiable.  It is not optimized, and omits many desirable
 features.
 
 """
+# Version 1.0.0
+# Date - 21 July 2015
 
 #### Libraries
 # Standard library
@@ -162,7 +164,7 @@ class Network():
         n = len(training_data)
         evaluation_cost, evaluation_accuracy = [], []
         training_cost, training_accuracy = [], []
-        f = open("wrongdata.txt", "w")
+        f = open("outputdata.txt", "w")
         unsolved_examples = []
         for j in xrange(epochs):
             random.shuffle(training_data)
@@ -213,10 +215,13 @@ class Network():
             print (max(training_accuracy)*100.0)/len(training_data) # Print maximum accuracy across epochs
             print (max(evaluation_accuracy)*100.0)/len(evaluation_data) # print maximum accuracy across epochs
             print
+        outputdata = self.datastorage(training_data, classtypes, mode, convert=True, items=1)
+        outputdata += self.datastorage(evaluation_data, classtypes, mode, convert=False, items=1)
         unsolved_examples = unsolved_training_examples + unsolved_evaluation_examples
         wrongs = len(unsolved_examples)
         print "Total wrongly identified samAsas are {}".format(wrongs) # Print total number of wrong identification in all epochs.
-        json.dump(unsolved_examples, f) # Save the wrong data in file wrongdata.txt for further manipulation, if needed.
+        #json.dump(unsolved_examples, f) # Save the wrong data in file outputdata.txt for further manipulation, if needed.
+        json.dump(outputdata, f) # Save the data in file outputdata.txt for further manipulation, if needed.
         f.close()
         self.logonce(epochs, mini_batch_size, eta, lmbda, training_accuracy, evaluation_accuracy, training_cost, evaluation_cost, unsolved_examples, training_data, evaluation_data) # Logging all necessary information along for reconstruction of network, accuracies, costs etc with wrong identified data
         return evaluation_cost, evaluation_accuracy, \
@@ -326,6 +331,21 @@ class Network():
                 unsol.append(self.returnerror(self.class_renamed(np.argmax(self.feedforward(c)), classtypes), self.class_renamed(np.argmax(d), classtypes), self.back_to_string(c.tolist(), mode) ))
         return unsol
 
+	# Added by Dhaval to append the data of all examples.
+    def datastorage(self, data, classtypes, mode, convert=False, items=1):
+        if convert:
+            results = [(map(self.feedforward(x).tolist().index, heapq.nlargest(items, self.feedforward(x).tolist())), np.argmax(y), x, y) for (x, y) in data]
+        else:
+            results = [(map(self.feedforward(x).tolist().index, heapq.nlargest(items, self.feedforward(x).tolist())), y, x, y)
+                        for (x, y) in data]
+        unsol = []
+        for (a, b, c, d) in results:
+            if convert:
+                unsol.append(self.returnerror(self.class_renamed(np.argmax(self.feedforward(c)), classtypes), self.class_renamed(np.argmax(d), classtypes), self.back_to_string(c.tolist(), mode) ))
+            else:
+                unsol.append(self.returnerror(self.class_renamed(np.argmax(self.feedforward(c)), classtypes), self.class_renamed(d, classtypes), self.back_to_string(c.tolist(), mode) ))
+        return unsol
+
 	# Added by Dhaval. It is reverse of sva in preparation.py. Converts the numbers back to human readable format.
     def back_to_string(self, x, mode):
         val = ''
@@ -346,7 +366,7 @@ class Network():
 			return val
     
     # Added by Dhaval. It returns the classname from the number.
-    def class_renamed(self, x, classtypes):
+    def class_renamed(self, x, classtypes, convert=False):
         return classtypes[x]
 
 	# Added by Dhaval. returns the data in format amenable to json.
@@ -410,7 +430,7 @@ class Network():
     # Dhaval added parameters classtypes, mode and items
     def testing(self, evaluation_data, items=1):
         n_data = len(evaluation_data)
-        f = open("wrongdata.txt", "w")
+        f = open("outputdata.txt", "w")
         accuracy = self.accuracy(evaluation_data, convert=False, items=items)
         print "Accuracy on evaluation data: {} / {} i.e. {} %".format(
 				accuracy, n_data, (accuracy*100.0)/n_data)
