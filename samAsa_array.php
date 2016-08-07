@@ -58,7 +58,14 @@ fputs($infile,']
 
 fclose($infile);
 
-
+/* Create a CSV file too */
+$outcsv = fopen('samAsa_details.csv','w+');
+$length = count($inputset);
+for($i=0;$i<$length;$i++)
+{
+	fputs($outcsv,$inputset[$i].",".$outputset[$i].",".$majorset[$i]."\n");
+}
+fclose($outcsv);
 
 /* Functions used in the code */
 function multitags($dataset1)
@@ -151,7 +158,7 @@ function inputset($dataset2)
 	return $val;
 }
 
-function majorset($outputset)output
+function majorset($outputset)
 {
 	$fulllist = array("A1","A2","A3","A4","A5","A6","A7","K1","K2","K3","K4","K5","K6","K7","Km","T1","T2","T3","T4","T5","T6","T7","Tn","Tds","Tdt","Tdu","Tg","Tk","Tp","Tm","Tb","Bs2","Bs3","Bs4","Bs5","Bs6","Bs7","Bsd","Bsp","Bsg","Bsmn","Bvp","Bss","Bsu","Bvs","BvS","Bv","BvU","Bb","Di","Ds","E","S","d","U","BT");
     $majorlist = array("A","A","A","A","A","A","A","K","K","K","K","K","K","K","K","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","T","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","D","D","D","D","D","T","B");
